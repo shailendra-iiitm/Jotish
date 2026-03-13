@@ -31,6 +31,12 @@ export default function Details() {
     }
 
     startCamera();
+
+    // Intentional Bug:
+    // Camera stream is not cleaned up on component unmount.
+    // This can cause a memory leak if the user navigates away
+    // while the stream is active.
+
   }, []);
 
   const capturePhoto = () => {
