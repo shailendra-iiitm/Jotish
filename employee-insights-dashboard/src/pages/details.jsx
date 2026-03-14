@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 export default function Details() {
-
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -13,38 +12,28 @@ export default function Details() {
   const [drawing, setDrawing] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
 
-
-
   const [photo, setPhoto] = useState(null);
   const [finalImage, setFinalImage] = useState(null);
 
-
   useEffect(() => {
-
     async function startCamera() {
-
       try {
-
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: true
+          video: true,
         });
 
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
-
       } catch (err) {
         console.error("Camera error:", err);
       }
-
     }
 
     startCamera();
-
   }, []);
 
   const capturePhoto = () => {
-
     const video = videoRef.current;
     const canvas = canvasRef.current;
 
@@ -58,153 +47,136 @@ export default function Details() {
     const image = canvas.toDataURL("image/png");
 
     setPhoto(image);
-
   };
 
-    const startDrawing = (e) => {
+  const startDrawing = (e) => {
     const canvas = signatureCanvasRef.current;
     const ctx = canvas.getContext("2d");
     ctx.beginPath();
     ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     setDrawing(true);
-    };
+  };
 
-    const draw = (e) => {
+  const draw = (e) => {
     if (!drawing) return;
     const canvas = signatureCanvasRef.current;
     const ctx = canvas.getContext("2d");
     ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     ctx.stroke();
     setHasSignature(true);
-    };
+  };
 
-    const stopDrawing = () => {
+  const stopDrawing = () => {
     setDrawing(false);
-    };
+  };
 
-    const mergeImages = () => {
+  const mergeImages = () => {
     const signatureCanvas = signatureCanvasRef.current;
     const mergedCanvas = document.createElement("canvas");
     const ctx = mergedCanvas.getContext("2d");
     const image = new Image();
     image.src = photo;
     image.onload = () => {
-        mergedCanvas.width = image.width;
-        mergedCanvas.height = image.height;
-        ctx.drawImage(image, 0, 0);
-        ctx.drawImage(
-        signatureCanvas,
-        0,
-        image.height - 200
-        );
-        const merged = mergedCanvas.toDataURL("image/png");
-        setFinalImage(merged);
+      mergedCanvas.width = image.width;
+      mergedCanvas.height = image.height;
+      ctx.drawImage(image, 0, 0);
+      ctx.drawImage(signatureCanvas, 0, image.height - 200);
+      const merged = mergedCanvas.toDataURL("image/png");
+      setFinalImage(merged);
     };
-};
-
-
+  };
 
   return (
+    <div className="min-h-screen bg-gray-100 flex justify-center p-6">
+      <div className="bg-white shadow-lg rounded-lg p-6 w-[700px]">
+        <button
+          onClick={() => navigate("/list")}
+          className="text-blue-500 mb-4"
+        >
+          ← Back
+        </button>
 
-    <div className="p-6">
+        <h1 className="text-2xl font-bold mb-2">Employee Verification</h1>
 
-      <button
-        onClick={() => navigate("/list")}
-        className="mb-4 text-blue-500"
-      >
-        ← Back
-      </button>
+        <p className="text-gray-500 mb-6">Employee ID: {id}</p>
 
-      <h1 className="text-xl font-bold mb-4">
-        Employee Verification
-      </h1>
+        {/* SHOW CAMERA + SIGNATURE ONLY BEFORE MERGE */}
 
-      <p className="mb-6">
-        Employee ID: {id}
-      </p>
+        {!finalImage && (
+          <>
+            <div className="flex flex-col items-center">
+              {!photo && (
+                <>
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    className="w-[500px] rounded border"
+                  />
 
-      {!photo && (
-        <>
-          <video
-            ref={videoRef}
-            autoPlay
-            className="w-[400px] border"
-          />
+                  <button
+                    onClick={capturePhoto}
+                    className="mt-4 px-6 py-2 bg-blue-500 text-white rounded"
+                  >
+                    Capture Photo
+                  </button>
+                </>
+              )}
 
-          <button
-            onClick={capturePhoto}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white"
-          >
-            Capture Photo
-          </button>
-        </>
-      )}
+              {photo && (
+                <img src={photo} className="w-[500px] rounded border" />
+              )}
+            </div>
 
-      {photo && (
-            <div className="mt-4">
-
-                <img
-                src={photo}
-                alt="Captured"
-                className="w-[400px] border"
-                />
-
-                <p className="mt-4 font-semibold">
-                Sign Below
-                </p>
+            {photo && (
+              <div className="mt-6">
+                <p className="font-semibold mb-2">Sign Below</p>
 
                 <canvas
-                ref={signatureCanvasRef}
-                width={400}
-                height={200}
-                className="border mt-2"
-                onMouseDown={startDrawing}
-                onMouseMove={draw}
-                onMouseUp={stopDrawing}
-                onMouseLeave={stopDrawing}
+                  ref={signatureCanvasRef}
+                  width={400}
+                  height={150}
+                  className="border rounded w-full"
+                  onMouseDown={startDrawing}
+                  onMouseMove={draw}
+                  onMouseUp={stopDrawing}
+                  onMouseLeave={stopDrawing}
                 />
-
-            </div>
+              </div>
             )}
 
-            {hasSignature &&
-                <button onClick={mergeImages}
-                    className="mt-4 px-4 py-2 bg-green-500 text-white"
-                >
-                Generate Audit Image  
-                </button>
-            }
-
-            {finalImage && (
-            <div className="mt-6">
-                <h2 className="font-bold mb-2">
-                Final Audit Image
-                </h2>
-                <img
-                src={finalImage}
-                alt="Audit"
-                className="w-[400px] border"
-                />
-            </div>
+            {hasSignature && (
+              <button
+                onClick={mergeImages}
+                className="mt-4 px-6 py-2 bg-green-500 text-white rounded"
+              >
+                Generate Audit Image
+              </button>
             )}
+          </>
+        )}
 
-            {finalImage && (
-            <div className="mt-4">
-                <a
-                href={finalImage}
-                download="audit-image.png"
-                className="px-4 py-2 bg-blue-500 text-white"
-                >
-                Download Audit Image
-                </a>
-            </div>
-            )}
+        {/* SHOW ONLY FINAL IMAGE */}
 
-      {/* hidden canvas used for capture */}
-      <canvas ref={canvasRef} style={{ display: "none" }} />
+        {finalImage && (
+          <div className="flex flex-col items-center">
+            <h2 className="font-bold mb-4 text-lg">Final Audit Image</h2>
 
+            <img src={finalImage} className="w-[500px] border rounded" />
+
+            <a
+              href={finalImage}
+              download="audit-image.png"
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+            >
+              Download Image
+            </a>
+          </div>
+        )}
+
+        {/* hidden capture canvas */}
+
+        <canvas ref={canvasRef} style={{ display: "none" }} />
+      </div>
     </div>
-
   );
-
 }
