@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import "../utils/fixLeafletIcon";
+import "../utils/fixleafletIcons";
 
 export default function CityMap({ data }) {
   // map city names → coordinates
@@ -20,8 +20,8 @@ export default function CityMap({ data }) {
   return (
     <div className="mt-8 border rounded shadow">
       <MapContainer
-        center={[20, 0]}
-        zoom={2}
+        center={[30, 20]}
+        zoom={2.2}
         style={{ height: "450px", width: "100%" }}
       >
         <TileLayer

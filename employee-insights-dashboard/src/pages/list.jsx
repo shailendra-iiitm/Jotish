@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchEmployees } from "../api/employeeApi";
 import VirtualizedTable from "../components/virtualizedTable";
 import { useNavigate } from "react-router-dom";
+
 export default function List() {
   const [data, setData] = useState([]);
   const navigate = useNavigate();

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchEmployees } from "../api/employeeApi";
-import SalaryChart from "../components/SalaryChart";
+import SalaryChart from "../components/salaryChart";
+import CityMap from "../components/cityMap";
 
 export default function Analytics() {
   const [data, setData] = useState([]);
@@ -27,8 +28,9 @@ export default function Analytics() {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">Salary Distribution by City</h1>
-
       <SalaryChart data={data} />
+      <h2 className="text-xl font-bold mt-10 mb-4">City Locations</h2>
+      <CityMap data={data} />
     </div>
   );
 }
