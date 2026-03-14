@@ -1,44 +1,34 @@
 import { useEffect, useState } from "react";
 import { fetchEmployees } from "../api/employeeApi";
+import VirtualizedTable from "../components/virtualizedTable";
 
-export default function List() {
+export default function List(){
 
-  const [data, setData] = useState([]);
+  const [data,setData] = useState([]);
 
-  useEffect(() => {
+  useEffect(()=>{
 
-    async function loadData(){
+    async function load(){
       const res = await fetchEmployees();
       setData(res.data || []);
     }
 
-    loadData();
+    load();
 
-  }, []);
+  },[]);
 
   return (
+
     <div className="p-6">
 
       <h1 className="text-xl font-bold mb-4">
         Employee List
       </h1>
 
-      <div className="border">
-
-        {data.map((employee, index) => (
-          <div
-            key={index}
-            className="flex gap-6 border-b p-3"
-          >
-            <div>{employee.id}</div>
-            <div>{employee.name}</div>
-            <div>{employee.city}</div>
-            <div>{employee.salary}</div>
-          </div>
-        ))}
-
-      </div>
+      <VirtualizedTable data={data} />
 
     </div>
+
   );
+
 }
