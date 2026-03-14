@@ -1,9 +1,38 @@
+import { useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 export default function Details() {
 
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+
+    async function startCamera() {
+
+      try {
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true
+        });
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+
+      } catch (err) {
+
+        console.error("Camera error:", err);
+
+      }
+
+    }
+
+    startCamera();
+
+  }, []);
 
   return (
 
@@ -24,15 +53,11 @@ export default function Details() {
         Employee ID: {id}
       </p>
 
-      {/* camera will go here */}
-
-      <div className="border p-4">
-
-        <p className="text-gray-500">
-          Camera preview will appear here
-        </p>
-
-      </div>
+      <video
+        ref={videoRef}
+        autoPlay
+        className="w-[400px] border"
+      />
 
     </div>
 
