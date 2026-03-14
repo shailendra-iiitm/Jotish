@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/list" element={<List />} />
+        <Route path="/list" element={<ProtectedRoute><List/></ProtectedRoute>} />
         <Route path="/details/:id" element={<Details />} />
         <Route path="/analytics" element={<Analytics />} />
       </Routes>
