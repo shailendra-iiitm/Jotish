@@ -14,7 +14,10 @@ export function AuthProvider({ children }) {
 
       localStorage.setItem("authUser", username);
       setUser(username);
+      return true;
     }
+
+    return false;
 
   };
 
