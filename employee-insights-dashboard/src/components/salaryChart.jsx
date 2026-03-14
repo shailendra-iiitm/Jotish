@@ -1,35 +1,42 @@
 export default function SalaryChart({ data }) {
-  if (!data.length) return <p>Loading chart...</p>;
+  if (!data || data.length === 0) {
+    return <p>Loading chart...</p>;
+  }
 
-  const cities = {};
+  // group salary by city
+  const citySalary = {};
 
   data.forEach((emp) => {
     const city = emp.city;
 
     const salary = parseInt(emp.salary.replace(/[$,]/g, ""));
 
-    if (!cities[city]) cities[city] = 0;
+    if (!citySalary[city]) {
+      citySalary[city] = 0;
+    }
 
-    cities[city] += salary;
+    citySalary[city] += salary;
   });
 
-  const chartData = Object.entries(cities);
+  const chartData = Object.entries(citySalary);
 
   const maxSalary = Math.max(...chartData.map((d) => d[1]));
 
+  const chartHeight = 350;
   const chartWidth = chartData.length * 120;
-  const chartHeight = 320;
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto border p-4 bg-white rounded shadow">
       <svg width={chartWidth} height={chartHeight}>
-        {chartData.map(([city, salary], i) => {
+        {chartData.map(([city, salary], index) => {
           const barHeight = (salary / maxSalary) * 250;
 
           return (
             <g key={city}>
+              {/* BAR */}
+
               <rect
-                x={i * 120 + 20}
+                x={index * 120 + 20}
                 y={chartHeight - barHeight - 40}
                 width="80"
                 height={barHeight}
@@ -37,9 +44,23 @@ export default function SalaryChart({ data }) {
                 rx="4"
               />
 
+              {/* SALARY VALUE */}
+
               <text
-                x={i * 120 + 60}
-                y={chartHeight - 15}
+                x={index * 120 + 60}
+                y={chartHeight - barHeight - 50}
+                textAnchor="middle"
+                fontSize="11"
+                fill="#333"
+              >
+                ${(salary / 1000).toFixed(0)}k
+              </text>
+
+              {/* CITY LABEL */}
+
+              <text
+                x={index * 120 + 60}
+                y={chartHeight - 10}
                 textAnchor="middle"
                 fontSize="12"
               >
