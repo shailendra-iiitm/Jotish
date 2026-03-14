@@ -5,18 +5,17 @@ export default function VirtualizedTable({ data }) {
   const containerRef = useRef(null);
 
   const [scrollTop, setScrollTop] = useState(0);
+const rowHeight = 50;
+const visibleRows = 10;
+const buffer = 5;
 
-  const rowHeight = 50;
+const totalHeight = data.length * rowHeight;
 
-  const visibleRows = 10;
+const startIndex = Math.max(0, Math.floor(scrollTop / rowHeight) - buffer);
 
-  const totalHeight = data.length * rowHeight;
+const endIndex = startIndex + visibleRows + buffer * 2;
 
-  const startIndex = Math.floor(scrollTop / rowHeight);
-
-  const endIndex = startIndex + visibleRows;
-
-  const visibleData = data.slice(startIndex, endIndex);
+const visibleData = data.slice(startIndex, endIndex);
 
   const handleScroll = () => {
     setScrollTop(containerRef.current.scrollTop);
