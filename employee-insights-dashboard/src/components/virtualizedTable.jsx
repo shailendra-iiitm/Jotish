@@ -5,20 +5,31 @@ export default function VirtualizedTable({ data }) {
   const containerRef = useRef(null);
 
   const [scrollTop, setScrollTop] = useState(0);
-const rowHeight = 50;
-const visibleRows = 10;
-const buffer = 5;
 
-const totalHeight = data.length * rowHeight;
+  const rowHeight = 50;
+  const containerHeight = 500;
 
-const startIndex = Math.max(0, Math.floor(scrollTop / rowHeight) - buffer);
+  const visibleRows = Math.ceil(containerHeight / rowHeight);
+  const buffer = 5;
 
-const endIndex = startIndex + visibleRows + buffer * 2;
+  const totalHeight = data.length * rowHeight;
 
-const visibleData = data.slice(startIndex, endIndex);
+  const startIndex = Math.max(
+    0,
+    Math.floor(scrollTop / rowHeight) - buffer
+  );
+
+  const endIndex = Math.min(
+    data.length,
+    startIndex + visibleRows + buffer * 2
+  );
+
+  const visibleData = data.slice(startIndex, endIndex);
 
   const handleScroll = () => {
-    setScrollTop(containerRef.current.scrollTop);
+    if (containerRef.current) {
+      setScrollTop(containerRef.current.scrollTop);
+    }
   };
 
   return (
@@ -29,25 +40,48 @@ const visibleData = data.slice(startIndex, endIndex);
       className="h-[500px] overflow-y-auto border"
     >
 
-      <div style={{ height: totalHeight }}>
+      {/* spacer that creates full scroll height */}
+      <div
+        style={{
+          height: totalHeight,
+          position: "relative"
+        }}
+      >
 
+        {/* visible rows container */}
         <div
           style={{
-            transform: `translateY(${startIndex * rowHeight}px)`
+            position: "absolute",
+            top: startIndex * rowHeight,
+            left: 0,
+            right: 0
           }}
         >
 
-          {visibleData.map((employee, index) => (
+          {visibleData.map((employee) => (
 
             <div
-              key={index}
-              className="flex gap-6 border-b p-3"
+              key={employee.id}
+              className="flex items-center border-b bg-white hover:bg-gray-50"
               style={{ height: rowHeight }}
             >
-              <div>{employee.id}</div>
-              <div>{employee.name}</div>
-              <div>{employee.city}</div>
-              <div>{employee.salary}</div>
+
+              <div className="w-[220px] px-2">
+                {employee.name}
+              </div>
+
+              <div className="w-[220px] px-2">
+                {employee.position}
+              </div>
+
+              <div className="w-[160px] px-2">
+                {employee.city}
+              </div>
+
+              <div className="w-[140px] px-2">
+                {employee.salary}
+              </div>
+
             </div>
 
           ))}
