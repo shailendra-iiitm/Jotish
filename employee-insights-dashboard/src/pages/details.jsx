@@ -11,6 +11,8 @@ export default function Details() {
 
   const signatureCanvasRef = useRef(null);
   const [drawing, setDrawing] = useState(false);
+  const [hasSignature, setHasSignature] = useState(false);
+
 
 
   const [photo, setPhoto] = useState(null);
@@ -73,6 +75,7 @@ export default function Details() {
     const ctx = canvas.getContext("2d");
     ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     ctx.stroke();
+    setHasSignature(true);
     };
 
     const stopDrawing = () => {
@@ -164,10 +167,13 @@ export default function Details() {
             </div>
             )}
 
-            <button onClick={mergeImages}
-                className="mt-4 px-4 py-2 bg-green-500 text-white"
-            >
-            Generate Audit Image  </button>
+            {hasSignature &&
+                <button onClick={mergeImages}
+                    className="mt-4 px-4 py-2 bg-green-500 text-white"
+                >
+                Generate Audit Image  
+                </button>
+            }
 
             {finalImage && (
             <div className="mt-6">
@@ -179,6 +185,18 @@ export default function Details() {
                 alt="Audit"
                 className="w-[400px] border"
                 />
+            </div>
+            )}
+
+            {finalImage && (
+            <div className="mt-4">
+                <a
+                href={finalImage}
+                download="audit-image.png"
+                className="px-4 py-2 bg-blue-500 text-white"
+                >
+                Download Audit Image
+                </a>
             </div>
             )}
 
