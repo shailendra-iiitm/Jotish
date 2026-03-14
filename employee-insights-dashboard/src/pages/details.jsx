@@ -9,6 +9,10 @@ export default function Details() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
+  const signatureCanvasRef = useRef(null);
+  const [drawing, setDrawing] = useState(false);
+
+
   const [photo, setPhoto] = useState(null);
 
   useEffect(() => {
@@ -53,6 +57,27 @@ export default function Details() {
 
   };
 
+    const startDrawing = (e) => {
+    const canvas = signatureCanvasRef.current;
+    const ctx = canvas.getContext("2d");
+    ctx.beginPath();
+    ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    setDrawing(true);
+    };
+
+    const draw = (e) => {
+    if (!drawing) return;
+    const canvas = signatureCanvasRef.current;
+    const ctx = canvas.getContext("2d");
+    ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    ctx.stroke();
+    };
+
+    const stopDrawing = () => {
+    setDrawing(false);
+    };
+
+
   return (
 
     <div className="p-6">
@@ -90,13 +115,31 @@ export default function Details() {
       )}
 
       {photo && (
-        <img
-          src={photo}
-          alt="Captured"
-          className="w-[400px] border"
-        />
-      )}
+            <div className="mt-4">
 
+                <img
+                src={photo}
+                alt="Captured"
+                className="w-[400px] border"
+                />
+
+                <p className="mt-4 font-semibold">
+                Sign Below
+                </p>
+
+                <canvas
+                ref={signatureCanvasRef}
+                width={400}
+                height={200}
+                className="border mt-2"
+                onMouseDown={startDrawing}
+                onMouseMove={draw}
+                onMouseUp={stopDrawing}
+                onMouseLeave={stopDrawing}
+                />
+
+            </div>
+            )}
       {/* hidden canvas used for capture */}
       <canvas ref={canvasRef} style={{ display: "none" }} />
 
