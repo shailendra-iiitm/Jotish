@@ -14,6 +14,8 @@ export default function Details() {
 
 
   const [photo, setPhoto] = useState(null);
+  const [finalImage, setFinalImage] = useState(null);
+
 
   useEffect(() => {
 
@@ -76,6 +78,27 @@ export default function Details() {
     const stopDrawing = () => {
     setDrawing(false);
     };
+
+    const mergeImages = () => {
+    const signatureCanvas = signatureCanvasRef.current;
+    const mergedCanvas = document.createElement("canvas");
+    const ctx = mergedCanvas.getContext("2d");
+    const image = new Image();
+    image.src = photo;
+    image.onload = () => {
+        mergedCanvas.width = image.width;
+        mergedCanvas.height = image.height;
+        ctx.drawImage(image, 0, 0);
+        ctx.drawImage(
+        signatureCanvas,
+        0,
+        image.height - 200
+        );
+        const merged = mergedCanvas.toDataURL("image/png");
+        setFinalImage(merged);
+    };
+};
+
 
 
   return (
@@ -140,6 +163,25 @@ export default function Details() {
 
             </div>
             )}
+
+            <button onClick={mergeImages}
+                className="mt-4 px-4 py-2 bg-green-500 text-white"
+            >
+            Generate Audit Image  </button>
+
+            {finalImage && (
+            <div className="mt-6">
+                <h2 className="font-bold mb-2">
+                Final Audit Image
+                </h2>
+                <img
+                src={finalImage}
+                alt="Audit"
+                className="w-[400px] border"
+                />
+            </div>
+            )}
+
       {/* hidden canvas used for capture */}
       <canvas ref={canvasRef} style={{ display: "none" }} />
 
