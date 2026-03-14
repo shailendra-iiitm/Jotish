@@ -1,6 +1,9 @@
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function VirtualizedTable({ data }) {
+
+  const navigate = useNavigate();
 
   const containerRef = useRef(null);
 
@@ -62,7 +65,8 @@ export default function VirtualizedTable({ data }) {
 
             <div
               key={employee.id}
-              className="flex items-center border-b bg-white hover:bg-gray-50"
+              onClick={() => navigate(`/details/${employee.id}`)}
+              className="flex items-center border-b bg-white hover:bg-gray-50 cursor-pointer"
               style={{ height: rowHeight }}
             >
 
