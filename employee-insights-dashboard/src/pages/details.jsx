@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import LogoutButton from "../components/logoutButton";
 
 export default function Details() {
   const { id } = useParams();
@@ -141,12 +142,16 @@ export default function Details() {
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center p-6">
       <div className="bg-white shadow-lg rounded-lg p-6 w-[700px]">
-        <button
-          onClick={() => navigate("/list")}
-          className="text-blue-500 mb-4"
-        >
-          ← Back
-        </button>
+        <div className="mb-4 flex items-center justify-between">
+          <button
+            onClick={() => navigate("/list")}
+            className="text-blue-500"
+          >
+            ← Back
+          </button>
+
+          <LogoutButton />
+        </div>
 
         <h1 className="text-2xl font-bold mb-2">Employee Verification</h1>
 

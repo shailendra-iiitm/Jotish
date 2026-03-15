@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchEmployees } from "../api/employeeApi";
 import VirtualizedTable from "../components/virtualizedTable";
 import { useNavigate } from "react-router-dom";
+import LogoutButton from "../components/logoutButton";
 
 export default function List() {
   const [data, setData] = useState([]);
@@ -31,12 +32,16 @@ export default function List() {
 
   return (
     <div className="p-6">
-      <button
-        onClick={() => navigate("/analytics")}
-        className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
-      >
-        View Analytics
-      </button>
+      <div className="mb-4 flex gap-3">
+        <button
+          onClick={() => navigate("/analytics")}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          View Analytics
+        </button>
+
+        <LogoutButton />
+      </div>
 
       <h1 className="text-xl font-bold mb-4">Employee List</h1>
 

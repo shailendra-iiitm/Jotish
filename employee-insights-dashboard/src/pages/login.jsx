@@ -6,6 +6,7 @@ export default function Login(){
 
   const [username,setUsername] = useState("");
   const [password,setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const { login } = useAuth();
 
@@ -15,9 +16,15 @@ export default function Login(){
 
     e.preventDefault();
 
-    login(username,password);
+    const isLoggedIn = login(username,password);
 
-    navigate("/list");
+    if (isLoggedIn) {
+      setError("");
+      navigate("/list");
+      return;
+    }
+
+    setError("Invalid username or password");
 
   };
 
@@ -29,14 +36,24 @@ export default function Login(){
 
         <input
         placeholder="Username"
-        onChange={(e)=>setUsername(e.target.value)}
+        onChange={(e)=>{
+          setUsername(e.target.value);
+          if (error) setError("");
+        }}
         />
 
         <input
         type="password"
         placeholder="Password"
-        onChange={(e)=>setPassword(e.target.value)}
+        onChange={(e)=>{
+          setPassword(e.target.value);
+          if (error) setError("");
+        }}
         />
+
+        {error && (
+          <p className="text-red-600 text-sm">{error}</p>
+        )}
 
         <button className="bg-blue-500 text-white p-2">
         Login
